@@ -24,5 +24,23 @@ def prepare_courier():
     courier.post_v1_create_courier(Constants.URL, data=data_post)
     r = courier.post_v1_login_courier(Constants.URL, data=data_post_login)
     courier_id = r.json()["id"]
-    yield courier.delete_v1_courier(Constants.URL, id=courier_id)
+    yield courier_id
+    courier.delete_v1_courier(Constants.URL, id=courier_id)
+
+
+@pytest.fixture()
+def prepare_courier_for_delete():
+    data_post = {
+        "login": login,
+        "password": password,
+        "firstName": name
+    }
+    data_post_login = {
+        "login": login,
+        "password": password
+    }
+    courier = Courier()
+    courier.post_v1_create_courier(Constants.URL, data=data_post)
+    r = courier.post_v1_login_courier(Constants.URL, data=data_post_login)
+    return r
 

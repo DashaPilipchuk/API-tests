@@ -1,5 +1,6 @@
 import pytest
 from const import Constants
+from const import ResponseBody
 from client.courier import Courier
 import allure
 from faker import Faker
@@ -18,7 +19,7 @@ class TestCourierLogin:
             "password": Constants.TEST_PASSWORD,
                 }
         response = courier.post_v1_login_courier(Constants.URL, data=data)
-        assert response.status_code == 200 and response.json() == {"id": 260399}
+        assert response.status_code == 200 and response.json() == ResponseBody.ID_DATA
 
     @allure.title('can`t get courier login without required fields')
     @pytest.mark.parametrize("test_login, test_password", [("", Constants.TEST_PASSWORD), (Constants.TEST_LOGIN, "")])
@@ -29,8 +30,7 @@ class TestCourierLogin:
             "password": test_password,
         }
         response = courier.post_v1_login_courier(Constants.URL, data=data)
-        assert response.status_code == 400 and response.json() == {"code": 400, "message": "Недостаточно данных для "
-                                                                                           "входа"}
+        assert response.status_code == 400 and response.json() == ResponseBody.WITHOUT_DATA_TO_LOGIN
 
     @allure.title('can`t get courier login with wrong login or password')
     @pytest.mark.parametrize("test_login, test_password", [(fake_login, Constants.TEST_PASSWORD), (Constants.TEST_LOGIN, fake_password)])
@@ -41,6 +41,6 @@ class TestCourierLogin:
             "password": test_password,
         }
         response = courier.post_v1_login_courier(Constants.URL, data=data)
-        assert response.status_code == 404 and response.json() == {"code": 404, "message": "Учетная запись не найдена"}
+        assert response.status_code == 404 and response.json() == ResponseBody.WRONG_DATA_TO_LOGIN
 
 
